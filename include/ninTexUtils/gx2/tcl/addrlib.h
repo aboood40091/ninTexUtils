@@ -129,18 +129,18 @@ ADDR_SURFACE_FLAGS;
 
 typedef struct _ADDR_COMPUTE_SURFACE_INFO_INPUT
 {
-	u32 size;
-	AddrTileMode tileMode;
-	AddrFormat format;
-	u32 bpp;
-	u32 numSamples;
-	u32 width;
-	u32 height;
-	u32 numSlices;
-	u32 slice;
-	u32 mipLevel;
-	ADDR_SURFACE_FLAGS flags;
-	u32 numFrags;
+    u32 size;
+    AddrTileMode tileMode;
+    AddrFormat format;
+    u32 bpp;
+    u32 numSamples;
+    u32 width;
+    u32 height;
+    u32 numSlices;
+    u32 slice;
+    u32 mipLevel;
+    ADDR_SURFACE_FLAGS flags;
+    u32 numFrags;
 }
 ADDR_COMPUTE_SURFACE_INFO_INPUT;
 
@@ -148,22 +148,22 @@ typedef struct _ADDR_COMPUTE_SURFACE_INFO_OUTPUT
 {
     u32 size;
     u32 pitch;
-	u32 height;
-	u32 depth;
-	u64 surfSize;
-	AddrTileMode tileMode;
-	u32 baseAlign;
+    u32 height;
+    u32 depth;
+    u64 surfSize;
+    AddrTileMode tileMode;
+    u32 baseAlign;
     u32 pitchAlign;
     u32 heightAlign;
-	u32 depthAlign;
-	u32 bpp;
-	u32 pixelPitch;
-	u32 pixelHeight;
-	u32 pixelBits;
-	u64 sliceSize;
-	u32 pitchTileMax;
-	u32 heightTileMax;
-	u32 sliceTileMax;
+    u32 depthAlign;
+    u32 bpp;
+    u32 pixelPitch;
+    u32 pixelHeight;
+    u32 pixelBits;
+    u64 sliceSize;
+    u32 pitchTileMax;
+    u32 heightTileMax;
+    u32 sliceTileMax;
 }
 ADDR_COMPUTE_SURFACE_INFO_OUTPUT;
 
