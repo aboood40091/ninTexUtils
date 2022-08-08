@@ -26,15 +26,21 @@
         #define TOKENPASTE2(x, y) TOKENPASTE(x, y)
         #define static_assert(condition, ...) typedef int TOKENPASTE2(static_assert_, __LINE__)[(condition) ? 1 : -1]
     #endif // static_assert
+
+    #include <stdint.h>
 #else
-    #include <assert.h>
+    #ifdef __cplusplus
+        #include <cassert>
+        #include <cstdint>
+    #else
+        #include <assert.h>
+        #include <stdint.h>
+    #endif
 #endif
 
 #ifdef __cplusplus
-    #include <cstdint>
     #include <cstddef>
 #else
-    #include <stdint.h>
     #include <stddef.h>
     #include <stdbool.h>
 #endif
