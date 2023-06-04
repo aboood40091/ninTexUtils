@@ -62,6 +62,9 @@ void GX2ComputeLevelSurfaceInfo(const GX2Surface* surf, u32 level, ADDR_COMPUTE_
         //assert(surf->dim != GX2_SURFACE_DIM_2D_MSAA &&
         //       surf->dim != GX2_SURFACE_DIM_2D_MSAA_ARRAY);
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch"
+
         switch (surf->dim)
         {
         case GX2_SURFACE_DIM_1D:
@@ -88,6 +91,8 @@ void GX2ComputeLevelSurfaceInfo(const GX2Surface* surf, u32 level, ADDR_COMPUTE_
             pSurfInfoOut->height = std::max(surf->height >> level, 1u);
             pSurfInfoOut->depth = surf->depth;
         }
+
+#pragma GCC diagnostic pop
 
         u32 height = RoundUp(pSurfInfoOut->height, elemSize) / elemSize;
 
