@@ -256,8 +256,8 @@ void GFDFile::destroy()
         if (shader.initialValues)
             delete[] shader.initialValues;
 
-        if (shader.loopVars)
-            delete[] (u32*)shader.loopVars;
+        if (shader._loopVars)
+            delete[] (u32*)shader._loopVars;
 
         if (shader.samplerVars)
         {
@@ -304,8 +304,8 @@ void GFDFile::destroy()
         if (shader.initialValues)
             delete[] shader.initialValues;
 
-        if (shader.loopVars)
-            delete[] (u32*)shader.loopVars;
+        if (shader._loopVars)
+            delete[] (u32*)shader._loopVars;
 
         if (shader.samplerVars)
         {
@@ -347,8 +347,8 @@ void GFDFile::destroy()
         if (shader.initialValues)
             delete[] shader.initialValues;
 
-        if (shader.loopVars)
-            delete[] (u32*)shader.loopVars;
+        if (shader._loopVars)
+            delete[] (u32*)shader._loopVars;
 
         if (shader.samplerVars)
         {

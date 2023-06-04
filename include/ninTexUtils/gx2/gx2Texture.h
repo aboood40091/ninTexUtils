@@ -11,7 +11,7 @@ typedef struct _GX2Texture
     u32 viewFirstSlice;
     u32 viewNumSlices;
     u32 compSel;
-    u32 regs[5];
+    u32 _regs[5];
 }
 GX2Texture;
 static_assert(sizeof(GX2Texture) == 0x9C, "GX2Texture size mismatch");

@@ -29,11 +29,11 @@ void LoadGX2Texture(const void* data, GX2Texture* tex, bool serialized, bool isB
         dst->viewFirstSlice = __builtin_bswap32(src->viewFirstSlice);
         dst->viewNumSlices  = __builtin_bswap32(src->viewNumSlices);
         dst->compSel        = __builtin_bswap32(src->compSel);
-        dst->regs[0]        = __builtin_bswap32(src->regs[0]);
-        dst->regs[1]        = __builtin_bswap32(src->regs[1]);
-        dst->regs[2]        = __builtin_bswap32(src->regs[2]);
-        dst->regs[3]        = __builtin_bswap32(src->regs[3]);
-        dst->regs[4]        = __builtin_bswap32(src->regs[4]);
+        dst->_regs[0]       = __builtin_bswap32(src->_regs[0]);
+        dst->_regs[1]       = __builtin_bswap32(src->_regs[1]);
+        dst->_regs[2]       = __builtin_bswap32(src->_regs[2]);
+        dst->_regs[3]       = __builtin_bswap32(src->_regs[3]);
+        dst->_regs[4]       = __builtin_bswap32(src->_regs[4]);
     }
     else if (src != dst)
     {

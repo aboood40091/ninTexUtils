@@ -69,7 +69,7 @@ static_assert(sizeof(GX2AttribVar) == 0x10, "GX2AttribVar size mismatch");
 
 typedef struct _GX2VertexShader
 {
-    u32 regs[52];
+    u32 _regs[52];
     u32 shaderSize;
     void* shaderPtr;
     GX2ShaderMode shaderMode;
@@ -79,8 +79,8 @@ typedef struct _GX2VertexShader
     GX2UniformVar* uniformVars;
     u32 numInitialValues;
     GX2UniformInitialValue* initialValues;
-    u32 numLoops;
-    void* loopVars;
+    u32 _numLoops;
+    void* _loopVars;
     u32 numSamplers;
     GX2SamplerVar* samplerVars;
     u32 numAttribs;
@@ -95,7 +95,7 @@ static_assert(sizeof(GX2VertexShader) == 0x134, "GX2VertexShader size mismatch")
 
 typedef struct _GX2PixelShader
 {
-    u32 regs[41];
+    u32 _regs[41];
     u32 shaderSize;
     void* shaderPtr;
     GX2ShaderMode shaderMode;
@@ -105,8 +105,8 @@ typedef struct _GX2PixelShader
     GX2UniformVar* uniformVars;
     u32 numInitialValues;
     GX2UniformInitialValue* initialValues;
-    u32 numLoops;
-    void* loopVars;
+    u32 _numLoops;
+    void* _loopVars;
     u32 numSamplers;
     GX2SamplerVar* samplerVars;
     GX2RBuffer shaderProgram;
@@ -116,7 +116,7 @@ static_assert(sizeof(GX2PixelShader) == 0xE8, "GX2PixelShader size mismatch");
 
 typedef struct _GX2GeometryShader
 {
-    u32 regs[19];
+    u32 _regs[19];
     u32 shaderSize;
     void* shaderPtr;
     u32 copyShaderSize;
@@ -128,8 +128,8 @@ typedef struct _GX2GeometryShader
     GX2UniformVar* uniformVars;
     u32 numInitialValues;
     GX2UniformInitialValue* initialValues;
-    u32 numLoops;
-    void* loopVars;
+    u32 _numLoops;
+    void* _loopVars;
     u32 numSamplers;
     GX2SamplerVar* samplerVars;
     u32 ringItemsize;

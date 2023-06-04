@@ -284,7 +284,7 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
     if (!isBigEndian)
 #endif
     {
-        Swap32(&dst->regs,                        &src->regs,                        52);
+        Swap32(&dst->_regs,                       &src->_regs,                       52);
         Swap32(&dst->shaderSize,                  &src->shaderSize);
         Swap32(&dst->shaderPtr,                   &src->shaderPtr);
         Swap32(&dst->shaderMode,                  &src->shaderMode);
@@ -294,8 +294,8 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
         Swap32(&dst->uniformVars,                 &src->uniformVars);
         Swap32(&dst->numInitialValues,            &src->numInitialValues);
         Swap32(&dst->initialValues,               &src->initialValues);
-        Swap32(&dst->numLoops,                    &src->numLoops);
-        Swap32(&dst->loopVars,                    &src->loopVars);
+        Swap32(&dst->_numLoops,                   &src->_numLoops);
+        Swap32(&dst->_loopVars,                   &src->_loopVars);
         Swap32(&dst->numSamplers,                 &src->numSamplers);
         Swap32(&dst->samplerVars,                 &src->samplerVars);
         Swap32(&dst->numAttribs,                  &src->numAttribs);
@@ -328,10 +328,10 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
     else
         assert(dst->initialValues == NULL);
 
-    if (dst->numLoops != 0)
-        assert(dst->loopVars != NULL);
+    if (dst->_numLoops != 0)
+        assert(dst->_loopVars != NULL);
     else
-        assert(dst->loopVars == NULL);
+        assert(dst->_loopVars == NULL);
 
     if (dst->numSamplers != 0)
         assert(dst->samplerVars != NULL);
@@ -359,8 +359,8 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
     *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + ((uintptr_t)dst->initialValues & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcLoopVars = dst->numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->loopVars & 0xFFFFFu)
-                                                   : (uintptr_t)NULL;
+    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->_loopVars & 0xFFFFFu)
+                                                    : (uintptr_t)NULL;
 
     *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + ((uintptr_t)dst->samplerVars & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
@@ -379,8 +379,8 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
         if (dst->numInitialValues != 0)
             dst->initialValues = new GX2UniformInitialValue[dst->numInitialValues];
 
-        if (dst->numLoops != 0)
-            dst->loopVars = new u32[2 * dst->numLoops];
+        if (dst->_numLoops != 0)
+            dst->_loopVars = new u32[2 * dst->_numLoops];
 
         if (dst->numSamplers != 0)
             dst->samplerVars = new GX2SamplerVar[dst->numSamplers];
@@ -396,8 +396,8 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
             *(uintptr_t*)&dst->uniformVars = (uintptr_t)dst + ((uintptr_t)dst->uniformVars & 0xFFFFFu);
         if (dst->initialValues != NULL)
             *(uintptr_t*)&dst->initialValues = (uintptr_t)dst + ((uintptr_t)dst->initialValues & 0xFFFFFu);
-        if (dst->loopVars != NULL)
-            *(uintptr_t*)&dst->loopVars = (uintptr_t)dst + ((uintptr_t)dst->loopVars & 0xFFFFFu);
+        if (dst->_loopVars != NULL)
+            *(uintptr_t*)&dst->_loopVars = (uintptr_t)dst + ((uintptr_t)dst->_loopVars & 0xFFFFFu);
         if (dst->samplerVars != NULL)
             *(uintptr_t*)&dst->samplerVars = (uintptr_t)dst + ((uintptr_t)dst->samplerVars & 0xFFFFFu);
         if (dst->attribVars != NULL)
@@ -410,8 +410,8 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
         LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars, dst, dst->numUniforms, allocate, isBigEndian);
     if (dst->numInitialValues != 0)
         LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues, dst, dst->numInitialValues, allocate, isBigEndian);
-    if (dst->numLoops != 0)
-        LoadGX2LoopVar(srcLoopVars, src, dst->loopVars, dst, dst->numLoops, allocate, isBigEndian);
+    if (dst->_numLoops != 0)
+        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars, dst, dst->_numLoops, allocate, isBigEndian);
     if (dst->numSamplers != 0)
         LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars, dst, dst->numSamplers, allocate, isBigEndian);
     if (dst->numAttribs != 0)
@@ -434,7 +434,7 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
     if (!isBigEndian)
 #endif
     {
-        Swap32(&dst->regs,                        &src->regs,                        41);
+        Swap32(&dst->_regs,                       &src->_regs,                       41);
         Swap32(&dst->shaderSize,                  &src->shaderSize);
         Swap32(&dst->shaderPtr,                   &src->shaderPtr);
         Swap32(&dst->shaderMode,                  &src->shaderMode);
@@ -444,8 +444,8 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
         Swap32(&dst->uniformVars,                 &src->uniformVars);
         Swap32(&dst->numInitialValues,            &src->numInitialValues);
         Swap32(&dst->initialValues,               &src->initialValues);
-        Swap32(&dst->numLoops,                    &src->numLoops);
-        Swap32(&dst->loopVars,                    &src->loopVars);
+        Swap32(&dst->_numLoops,                   &src->_numLoops);
+        Swap32(&dst->_loopVars,                   &src->_loopVars);
         Swap32(&dst->numSamplers,                 &src->numSamplers);
         Swap32(&dst->samplerVars,                 &src->samplerVars);
         Swap32(&dst->shaderProgram.resourceFlags, &src->shaderProgram.resourceFlags);
@@ -473,10 +473,10 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
     else
         assert(dst->initialValues == NULL);
 
-    if (dst->numLoops != 0)
-        assert(dst->loopVars != NULL);
+    if (dst->_numLoops != 0)
+        assert(dst->_loopVars != NULL);
     else
-        assert(dst->loopVars == NULL);
+        assert(dst->_loopVars == NULL);
 
     if (dst->numSamplers != 0)
         assert(dst->samplerVars != NULL);
@@ -498,8 +498,8 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
     *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + ((uintptr_t)dst->initialValues & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcLoopVars = dst->numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->loopVars & 0xFFFFFu)
-                                                   : (uintptr_t)NULL;
+    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->_loopVars & 0xFFFFFu)
+                                                    : (uintptr_t)NULL;
 
     *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + ((uintptr_t)dst->samplerVars & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
@@ -515,8 +515,8 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
         if (dst->numInitialValues != 0)
             dst->initialValues = new GX2UniformInitialValue[dst->numInitialValues];
 
-        if (dst->numLoops != 0)
-            dst->loopVars = new u32[2 * dst->numLoops];
+        if (dst->_numLoops != 0)
+            dst->_loopVars = new u32[2 * dst->_numLoops];
 
         if (dst->numSamplers != 0)
             dst->samplerVars = new GX2SamplerVar[dst->numSamplers];
@@ -529,8 +529,8 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
             *(uintptr_t*)&dst->uniformVars = (uintptr_t)dst + ((uintptr_t)dst->uniformVars & 0xFFFFFu);
         if (dst->initialValues != NULL)
             *(uintptr_t*)&dst->initialValues = (uintptr_t)dst + ((uintptr_t)dst->initialValues & 0xFFFFFu);
-        if (dst->loopVars != NULL)
-            *(uintptr_t*)&dst->loopVars = (uintptr_t)dst + ((uintptr_t)dst->loopVars & 0xFFFFFu);
+        if (dst->_loopVars != NULL)
+            *(uintptr_t*)&dst->_loopVars = (uintptr_t)dst + ((uintptr_t)dst->_loopVars & 0xFFFFFu);
         if (dst->samplerVars != NULL)
             *(uintptr_t*)&dst->samplerVars = (uintptr_t)dst + ((uintptr_t)dst->samplerVars & 0xFFFFFu);
     }
@@ -541,8 +541,8 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
         LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars, dst, dst->numUniforms, allocate, isBigEndian);
     if (dst->numInitialValues != 0)
         LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues, dst, dst->numInitialValues, allocate, isBigEndian);
-    if (dst->numLoops != 0)
-        LoadGX2LoopVar(srcLoopVars, src, dst->loopVars, dst, dst->numLoops, allocate, isBigEndian);
+    if (dst->_numLoops != 0)
+        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars, dst, dst->_numLoops, allocate, isBigEndian);
     if (dst->numSamplers != 0)
         LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars, dst, dst->numSamplers, allocate, isBigEndian);
 }
@@ -563,7 +563,7 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
     if (!isBigEndian)
 #endif
     {
-        Swap32(&dst->regs,                            &src->regs,                            19);
+        Swap32(&dst->_regs,                           &src->_regs,                           19);
         Swap32(&dst->shaderSize,                      &src->shaderSize);
         Swap32(&dst->shaderPtr,                       &src->shaderPtr);
         Swap32(&dst->copyShaderSize,                  &src->copyShaderSize);
@@ -575,8 +575,8 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
         Swap32(&dst->uniformVars,                     &src->uniformVars);
         Swap32(&dst->numInitialValues,                &src->numInitialValues);
         Swap32(&dst->initialValues,                   &src->initialValues);
-        Swap32(&dst->numLoops,                        &src->numLoops);
-        Swap32(&dst->loopVars,                        &src->loopVars);
+        Swap32(&dst->_numLoops,                       &src->_numLoops);
+        Swap32(&dst->_loopVars,                       &src->_loopVars);
         Swap32(&dst->numSamplers,                     &src->numSamplers);
         Swap32(&dst->samplerVars,                     &src->samplerVars);
         Swap32(&dst->ringItemsize,                    &src->ringItemsize);
@@ -611,10 +611,10 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
     else
         assert(dst->initialValues == NULL);
 
-    if (dst->numLoops != 0)
-        assert(dst->loopVars != NULL);
+    if (dst->_numLoops != 0)
+        assert(dst->_loopVars != NULL);
     else
-        assert(dst->loopVars == NULL);
+        assert(dst->_loopVars == NULL);
 
     if (dst->numSamplers != 0)
         assert(dst->samplerVars != NULL);
@@ -636,8 +636,8 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
     *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + ((uintptr_t)dst->initialValues & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcLoopVars = dst->numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->loopVars & 0xFFFFFu)
-                                                   : (uintptr_t)NULL;
+    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->_loopVars & 0xFFFFFu)
+                                                    : (uintptr_t)NULL;
 
     *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + ((uintptr_t)dst->samplerVars & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
@@ -653,8 +653,8 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
         if (dst->numInitialValues != 0)
             dst->initialValues = new GX2UniformInitialValue[dst->numInitialValues];
 
-        if (dst->numLoops != 0)
-            dst->loopVars = new u32[2 * dst->numLoops];
+        if (dst->_numLoops != 0)
+            dst->_loopVars = new u32[2 * dst->_numLoops];
 
         if (dst->numSamplers != 0)
             dst->samplerVars = new GX2SamplerVar[dst->numSamplers];
@@ -667,8 +667,8 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
             *(uintptr_t*)&dst->uniformVars = (uintptr_t)dst + ((uintptr_t)dst->uniformVars & 0xFFFFFu);
         if (dst->initialValues != NULL)
             *(uintptr_t*)&dst->initialValues = (uintptr_t)dst + ((uintptr_t)dst->initialValues & 0xFFFFFu);
-        if (dst->loopVars != NULL)
-            *(uintptr_t*)&dst->loopVars = (uintptr_t)dst + ((uintptr_t)dst->loopVars & 0xFFFFFu);
+        if (dst->_loopVars != NULL)
+            *(uintptr_t*)&dst->_loopVars = (uintptr_t)dst + ((uintptr_t)dst->_loopVars & 0xFFFFFu);
         if (dst->samplerVars != NULL)
             *(uintptr_t*)&dst->samplerVars = (uintptr_t)dst + ((uintptr_t)dst->samplerVars & 0xFFFFFu);
     }
@@ -679,8 +679,8 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
         LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars, dst, dst->numUniforms, allocate, isBigEndian);
     if (dst->numInitialValues != 0)
         LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues, dst, dst->numInitialValues, allocate, isBigEndian);
-    if (dst->numLoops != 0)
-        LoadGX2LoopVar(srcLoopVars, src, dst->loopVars, dst, dst->numLoops, allocate, isBigEndian);
+    if (dst->_numLoops != 0)
+        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars, dst, dst->_numLoops, allocate, isBigEndian);
     if (dst->numSamplers != 0)
         LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars, dst, dst->numSamplers, allocate, isBigEndian);
 }
