@@ -8,17 +8,7 @@ static inline bool IsPow2(u32 dim)
     return !(dim & (dim - 1));
 }
 
-static inline bool IsPow2(u64 dim)
-{
-    return !(dim & (dim - 1));
-}
-
 static inline u32 PowTwoAlign(u32 x, u32 align)
-{
-    return (x + (align - 1)) & (~(align - 1));
-}
-
-static inline u64 PowTwoAlign(u64 x, u64 align)
 {
     return (x + (align - 1)) & (~(align - 1));
 }
