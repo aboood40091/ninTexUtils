@@ -3,6 +3,8 @@
 
 #include "gx2Enum.h"
 
+#include <SerializedPtr.hpp>
+
 typedef enum _GX2RResourceFlags
 {
     GX2R_RESOURCE_FLAGS_NONE
@@ -22,7 +24,7 @@ static_assert(sizeof(GX2RBuffer) == 0x10, "GX2RBuffer size mismatch");
 
 typedef struct _GX2UniformBlock
 {
-    const char* name;
+    SerializedPtr<const char> name;
     u32 location;
     u32 size;
 }
@@ -31,7 +33,7 @@ static_assert(sizeof(GX2UniformBlock) == 0xC, "GX2UniformBlock size mismatch");
 
 typedef struct _GX2UniformVar
 {
-    const char* name;
+    SerializedPtr<const char> name;
     GX2VarType type;
     u32 arrayCount;
     u32 offset;
@@ -50,7 +52,7 @@ static_assert(sizeof(GX2UniformInitialValue) == 0x14, "GX2UniformInitialValue si
 
 typedef struct _GX2SamplerVar
 {
-    const char* name;
+    SerializedPtr<const char> name;
     GX2SamplerType type;
     u32 location;
 }
@@ -59,7 +61,7 @@ static_assert(sizeof(GX2SamplerVar) == 0xC, "GX2SamplerVar size mismatch");
 
 typedef struct _GX2AttribVar
 {
-    const char* name;
+    SerializedPtr<const char> name;
     GX2VarType type;
     u32 arrayCount;
     u32 location;
@@ -71,20 +73,20 @@ typedef struct _GX2VertexShader
 {
     u32 _regs[52];
     u32 shaderSize;
-    void* shaderPtr;
+    SerializedPtr<void> shaderPtr;
     GX2ShaderMode shaderMode;
     u32 numUniformBlocks;
-    GX2UniformBlock* uniformBlocks;
+    SerializedPtr<GX2UniformBlock> uniformBlocks;
     u32 numUniforms;
-    GX2UniformVar* uniformVars;
+    SerializedPtr<GX2UniformVar> uniformVars;
     u32 numInitialValues;
-    GX2UniformInitialValue* initialValues;
+    SerializedPtr<GX2UniformInitialValue> initialValues;
     u32 _numLoops;
-    void* _loopVars;
+    SerializedPtr<void> _loopVars;
     u32 numSamplers;
-    GX2SamplerVar* samplerVars;
+    SerializedPtr<GX2SamplerVar> samplerVars;
     u32 numAttribs;
-    GX2AttribVar* attribVars;
+    SerializedPtr<GX2AttribVar> attribVars;
     u32 ringItemsize;
     BOOL hasStreamOut;
     u32 streamOutVertexStride[4];
@@ -97,18 +99,18 @@ typedef struct _GX2PixelShader
 {
     u32 _regs[41];
     u32 shaderSize;
-    void* shaderPtr;
+    SerializedPtr<void> shaderPtr;
     GX2ShaderMode shaderMode;
     u32 numUniformBlocks;
-    GX2UniformBlock* uniformBlocks;
+    SerializedPtr<GX2UniformBlock> uniformBlocks;
     u32 numUniforms;
-    GX2UniformVar* uniformVars;
+    SerializedPtr<GX2UniformVar> uniformVars;
     u32 numInitialValues;
-    GX2UniformInitialValue* initialValues;
+    SerializedPtr<GX2UniformInitialValue> initialValues;
     u32 _numLoops;
-    void* _loopVars;
+    SerializedPtr<void> _loopVars;
     u32 numSamplers;
-    GX2SamplerVar* samplerVars;
+    SerializedPtr<GX2SamplerVar> samplerVars;
     GX2RBuffer shaderProgram;
 }
 GX2PixelShader;
@@ -118,20 +120,20 @@ typedef struct _GX2GeometryShader
 {
     u32 _regs[19];
     u32 shaderSize;
-    void* shaderPtr;
+    SerializedPtr<void> shaderPtr;
     u32 copyShaderSize;
-    void* copyShaderPtr;
+    SerializedPtr<void> copyShaderPtr;
     GX2ShaderMode shaderMode;
     u32 numUniformBlocks;
-    GX2UniformBlock* uniformBlocks;
+    SerializedPtr<GX2UniformBlock> uniformBlocks;
     u32 numUniforms;
-    GX2UniformVar* uniformVars;
+    SerializedPtr<GX2UniformVar> uniformVars;
     u32 numInitialValues;
-    GX2UniformInitialValue* initialValues;
+    SerializedPtr<GX2UniformInitialValue> initialValues;
     u32 _numLoops;
-    void* _loopVars;
+    SerializedPtr<void> _loopVars;
     u32 numSamplers;
-    GX2SamplerVar* samplerVars;
+    SerializedPtr<GX2SamplerVar> samplerVars;
     u32 ringItemsize;
     BOOL hasStreamOut;
     u32 streamOutVertexStride[4];

@@ -56,22 +56,13 @@ inline void SaveGX2Texture(
 {
     assert(tex);
 
-    void* imagePtr = tex->surface.imagePtr;
-    void* mipPtr = tex->surface.mipPtr;
-
     GX2Texture* tex_cc = (GX2Texture*)tex;
-    tex_cc->surface.imagePtr = (void*)0;
-    tex_cc->surface.mipPtr = (void*)0;
+    ScopedSerializedPtrNullSetter imageNullSetter(&tex_cc->surface.imagePtr, tex == data);
+    ScopedSerializedPtrNullSetter mipNullSetter(&tex_cc->surface.mipPtr, tex == data);
 
     GX2SurfaceVerifyForSerialization(&tex->surface);
     GX2TextureVerifyForSerialization(tex);
     LoadGX2Texture(tex, (GX2Texture*)data, false, isBigEndian);
-
-    if (tex != data)
-    {
-        tex_cc->surface.imagePtr = imagePtr;
-        tex_cc->surface.mipPtr = mipPtr;
-    }
 }
 
 void GX2TexturePrintInfo(const GX2Texture* tex);

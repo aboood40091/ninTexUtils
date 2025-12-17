@@ -152,10 +152,10 @@ size_t GFDFile::load(const void* data)
         }
         else if (blockType == GFD_BLOCK_TYPE_GX2_VS_PROGRAM)
         {
-            assert(currentVertexShader != NULL && currentVertexShader->shaderPtr == NULL);
+            assert(currentVertexShader != NULL && currentVertexShader->shaderPtr.getOffset() == 0);
             assert(blockDataSize == currentVertexShader->shaderSize);
-            currentVertexShader->shaderPtr = new u8[blockDataSize];
-            std::memcpy(currentVertexShader->shaderPtr, data_u8, blockDataSize);
+            currentVertexShader->shaderPtr.set(new u8[blockDataSize]);
+            std::memcpy(currentVertexShader->shaderPtr.get(), data_u8, blockDataSize);
         }
         else if (blockType == GFD_BLOCK_TYPE_GX2_PS_HEADER)
         {
@@ -166,10 +166,10 @@ size_t GFDFile::load(const void* data)
         }
         else if (blockType == GFD_BLOCK_TYPE_GX2_PS_PROGRAM)
         {
-            assert(currentPixelShader != NULL && currentPixelShader->shaderPtr == NULL);
+            assert(currentPixelShader != NULL && currentPixelShader->shaderPtr.getOffset() == 0);
             assert(blockDataSize == currentPixelShader->shaderSize);
-            currentPixelShader->shaderPtr = new u8[blockDataSize];
-            std::memcpy(currentPixelShader->shaderPtr, data_u8, blockDataSize);
+            currentPixelShader->shaderPtr.set(new u8[blockDataSize]);
+            std::memcpy(currentPixelShader->shaderPtr.get(), data_u8, blockDataSize);
         }
         else if (blockType == GFD_BLOCK_TYPE_GX2_GS_HEADER)
         {
@@ -180,18 +180,18 @@ size_t GFDFile::load(const void* data)
         }
         else if (blockType == GFD_BLOCK_TYPE_GX2_GS_PROGRAM)
         {
-            assert(currentGeometryShader != NULL && currentGeometryShader->shaderPtr == NULL);
+            assert(currentGeometryShader != NULL && currentGeometryShader->shaderPtr.getOffset() == 0);
             assert(blockDataSize == currentGeometryShader->shaderSize);
-            currentGeometryShader->shaderPtr = new u8[blockDataSize];
-            std::memcpy(currentGeometryShader->shaderPtr, data_u8, blockDataSize);
+            currentGeometryShader->shaderPtr.set(new u8[blockDataSize]);
+            std::memcpy(currentGeometryShader->shaderPtr.get(), data_u8, blockDataSize);
         }
         else if ((blockVersion == 0 && blockTypeV0 == GFD_BLOCK_TYPE_V0_GX2_GS_COPY_PROGRAM) ||
                  (blockVersion == 1 && blockTypeV1 == GFD_BLOCK_TYPE_V1_GX2_GS_COPY_PROGRAM))
         {
-            assert(currentGeometryShader != NULL && currentGeometryShader->copyShaderPtr == NULL);
+            assert(currentGeometryShader != NULL && currentGeometryShader->copyShaderPtr.getOffset() == 0);
             assert(blockDataSize == currentGeometryShader->copyShaderSize);
-            currentGeometryShader->copyShaderPtr = new u8[blockDataSize];
-            std::memcpy(currentGeometryShader->copyShaderPtr, data_u8, blockDataSize);
+            currentGeometryShader->copyShaderPtr.set(new u8[blockDataSize]);
+            std::memcpy(currentGeometryShader->copyShaderPtr.get(), data_u8, blockDataSize);
         }
         else if ((blockVersion == 0 && blockTypeV0 == GFD_BLOCK_TYPE_V0_GX2_TEX_HEADER) ||
                  (blockVersion == 1 && blockTypeV1 == GFD_BLOCK_TYPE_V1_GX2_TEX_HEADER))
@@ -204,18 +204,18 @@ size_t GFDFile::load(const void* data)
         else if ((blockVersion == 0 && blockTypeV0 == GFD_BLOCK_TYPE_V0_GX2_TEX_IMAGE_DATA) ||
                  (blockVersion == 1 && blockTypeV1 == GFD_BLOCK_TYPE_V1_GX2_TEX_IMAGE_DATA))
         {
-            assert(currentTexture != NULL && currentTexture->surface.imagePtr == NULL);
+            assert(currentTexture != NULL && currentTexture->surface.imagePtr.getOffset() == 0);
             assert(blockDataSize == currentTexture->surface.imageSize);
-            currentTexture->surface.imagePtr = new u8[blockDataSize];
-            std::memcpy(currentTexture->surface.imagePtr, data_u8, blockDataSize);
+            currentTexture->surface.imagePtr.set(new u8[blockDataSize]);
+            std::memcpy(currentTexture->surface.imagePtr.get(), data_u8, blockDataSize);
         }
         else if ((blockVersion == 0 && blockTypeV0 == GFD_BLOCK_TYPE_V0_GX2_TEX_MIP_DATA) ||
                  (blockVersion == 1 && blockTypeV1 == GFD_BLOCK_TYPE_V1_GX2_TEX_MIP_DATA))
         {
-            assert(currentTexture != NULL && currentTexture->surface.mipPtr == NULL);
+            assert(currentTexture != NULL && currentTexture->surface.mipPtr.getOffset() == 0);
             assert(blockDataSize == currentTexture->surface.mipSize);
-            currentTexture->surface.mipPtr = new u8[blockDataSize];
-            std::memcpy(currentTexture->surface.mipPtr, data_u8, blockDataSize);
+            currentTexture->surface.mipPtr.set(new u8[blockDataSize]);
+            std::memcpy(currentTexture->surface.mipPtr.get(), data_u8, blockDataSize);
         }
 
         data_u8 += blockDataSize;
@@ -321,9 +321,9 @@ std::vector<u8> GFDFile::saveGTX() const
         blockHeader.dataSize = texture.surface.imageSize;
 
         BufferAppend_GFDBlockHeader(outBuffer, blockHeader);
-        BufferAppend_Span(outBuffer, texture.surface.imagePtr, texture.surface.imageSize);
+        BufferAppend_Span(outBuffer, texture.surface.imagePtr.get(), texture.surface.imageSize);
 
-        if (texture.surface.mipPtr)
+        if (texture.surface.mipPtr.get())
         {
             // Write Pad block for the mipmap data
             if (align)
@@ -336,7 +336,7 @@ std::vector<u8> GFDFile::saveGTX() const
             blockHeader.dataSize = texture.surface.mipSize;
 
             BufferAppend_GFDBlockHeader(outBuffer, blockHeader);
-            BufferAppend_Span(outBuffer, texture.surface.mipPtr, texture.surface.mipSize);
+            BufferAppend_Span(outBuffer, texture.surface.mipPtr.get(), texture.surface.mipSize);
         }
     }
 
@@ -353,10 +353,10 @@ void GFDFile::destroy()
     for (u32 i = 0; i < mTextures.size(); i++)
     {
         GX2Texture& texture = mTextures[i];
-        if (texture.surface.imagePtr)
-            delete[] (u8*)texture.surface.imagePtr;
-        if (texture.surface.mipPtr)
-            delete[] (u8*)texture.surface.mipPtr;
+        if (texture.surface.imagePtr.get())
+            delete[] (u8*)texture.surface.imagePtr.get();
+        if (texture.surface.mipPtr.get())
+            delete[] (u8*)texture.surface.mipPtr.get();
     }
 
     mTextures.clear();
@@ -365,45 +365,45 @@ void GFDFile::destroy()
     {
         GX2VertexShader& shader = mVertexShaders[i];
 
-        if (shader.shaderPtr)
-            delete[] (u8*)shader.shaderPtr;
+        if (shader.shaderPtr.get())
+            delete[] (u8*)shader.shaderPtr.get();
 
-        if (shader.uniformBlocks)
+        if (shader.uniformBlocks.get())
         {
             for (u32 j = 0; j < shader.numUniformBlocks; j++)
-                delete[] shader.uniformBlocks[j].name;
+                delete[] shader.uniformBlocks.getIndexed(j)->name.get();
 
-            delete[] shader.uniformBlocks;
+            delete[] shader.uniformBlocks.get();
         }
 
-        if (shader.uniformVars)
+        if (shader.uniformVars.get())
         {
             for (u32 j = 0; j < shader.numUniforms; j++)
-                delete[] shader.uniformVars[j].name;
+                delete[] shader.uniformVars.getIndexed(j)->name.get();
 
-            delete[] shader.uniformVars;
+            delete[] shader.uniformVars.get();
         }
 
-        if (shader.initialValues)
-            delete[] shader.initialValues;
+        if (shader.initialValues.get())
+            delete[] shader.initialValues.get();
 
-        if (shader._loopVars)
-            delete[] (u32*)shader._loopVars;
+        if (shader._loopVars.get())
+            delete[] (u32*)shader._loopVars.get();
 
-        if (shader.samplerVars)
+        if (shader.samplerVars.get())
         {
             for (u32 j = 0; j < shader.numSamplers; j++)
-                delete[] shader.samplerVars[j].name;
+                delete[] shader.samplerVars.getIndexed(j)->name.get();
 
-            delete[] shader.samplerVars;
+            delete[] shader.samplerVars.get();
         }
 
-        if (shader.attribVars)
+        if (shader.attribVars.get())
         {
             for (u32 j = 0; j < shader.numAttribs; j++)
-                delete[] shader.attribVars[j].name;
+                delete[] shader.attribVars.getIndexed(j)->name.get();
 
-            delete[] shader.attribVars;
+            delete[] shader.attribVars.get();
         }
     }
 
@@ -413,37 +413,37 @@ void GFDFile::destroy()
     {
         GX2PixelShader& shader = mPixelShaders[i];
 
-        if (shader.shaderPtr)
-            delete[] (u8*)shader.shaderPtr;
+        if (shader.shaderPtr.get())
+            delete[] (u8*)shader.shaderPtr.get();
 
-        if (shader.uniformBlocks)
+        if (shader.uniformBlocks.get())
         {
             for (u32 j = 0; j < shader.numUniformBlocks; j++)
-                delete[] shader.uniformBlocks[j].name;
+                delete[] shader.uniformBlocks.getIndexed(j)->name.get();
 
-            delete[] shader.uniformBlocks;
+            delete[] shader.uniformBlocks.get();
         }
 
-        if (shader.uniformVars)
+        if (shader.uniformVars.get())
         {
             for (u32 j = 0; j < shader.numUniforms; j++)
-                delete[] shader.uniformVars[j].name;
+                delete[] shader.uniformVars.getIndexed(j)->name.get();
 
-            delete[] shader.uniformVars;
+            delete[] shader.uniformVars.get();
         }
 
-        if (shader.initialValues)
-            delete[] shader.initialValues;
+        if (shader.initialValues.get())
+            delete[] shader.initialValues.get();
 
-        if (shader._loopVars)
-            delete[] (u32*)shader._loopVars;
+        if (shader._loopVars.get())
+            delete[] (u32*)shader._loopVars.get();
 
-        if (shader.samplerVars)
+        if (shader.samplerVars.get())
         {
             for (u32 j = 0; j < shader.numSamplers; j++)
-                delete[] shader.samplerVars[j].name;
+                delete[] shader.samplerVars.getIndexed(j)->name.get();
 
-            delete[] shader.samplerVars;
+            delete[] shader.samplerVars.get();
         }
     }
 
@@ -453,40 +453,40 @@ void GFDFile::destroy()
     {
         GX2GeometryShader& shader = mGeometryShaders[i];
 
-        if (shader.shaderPtr)
-            delete[] (u8*)shader.shaderPtr;
+        if (shader.shaderPtr.get())
+            delete[] (u8*)shader.shaderPtr.get();
 
-        if (shader.copyShaderPtr)
-            delete[] (u8*)shader.copyShaderPtr;
+        if (shader.copyShaderPtr.get())
+            delete[] (u8*)shader.copyShaderPtr.get();
 
-        if (shader.uniformBlocks)
+        if (shader.uniformBlocks.get())
         {
             for (u32 j = 0; j < shader.numUniformBlocks; j++)
-                delete[] shader.uniformBlocks[j].name;
+                delete[] shader.uniformBlocks.getIndexed(j)->name.get();
 
-            delete[] shader.uniformBlocks;
+            delete[] shader.uniformBlocks.get();
         }
 
-        if (shader.uniformVars)
+        if (shader.uniformVars.get())
         {
             for (u32 j = 0; j < shader.numUniforms; j++)
-                delete[] shader.uniformVars[j].name;
+                delete[] shader.uniformVars.getIndexed(j)->name.get();
 
-            delete[] shader.uniformVars;
+            delete[] shader.uniformVars.get();
         }
 
-        if (shader.initialValues)
-            delete[] shader.initialValues;
+        if (shader.initialValues.get())
+            delete[] shader.initialValues.get();
 
-        if (shader._loopVars)
-            delete[] (u32*)shader._loopVars;
+        if (shader._loopVars.get())
+            delete[] (u32*)shader._loopVars.get();
 
-        if (shader.samplerVars)
+        if (shader.samplerVars.get())
         {
             for (u32 j = 0; j < shader.numSamplers; j++)
-                delete[] shader.samplerVars[j].name;
+                delete[] shader.samplerVars.getIndexed(j)->name.get();
 
-            delete[] shader.samplerVars;
+            delete[] shader.samplerVars.get();
         }
     }
 

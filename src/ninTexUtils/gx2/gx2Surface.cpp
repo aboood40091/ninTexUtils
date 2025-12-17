@@ -403,21 +403,21 @@ void GX2CopySurface(const GX2Surface* src, u32 srcLevel, u32 srcSlice,
     uintptr_t pDstImageData;
 
     if (srcLevel == 0)
-        pSrcImageData = (uintptr_t)src->imagePtr;
+        pSrcImageData = (uintptr_t)src->imagePtr.get();
 
     else
     {
-        pSrcImageData = (uintptr_t)src->mipPtr;
+        pSrcImageData = (uintptr_t)src->mipPtr.get();
         if (srcLevel != 1)
             pSrcImageData += src->mipOffset[srcLevel - 1];
     }
 
     if (dstLevel == 0)
-        pDstImageData = (uintptr_t)dst->imagePtr;
+        pDstImageData = (uintptr_t)dst->imagePtr.get();
 
     else
     {
-        pDstImageData = (uintptr_t)dst->mipPtr;
+        pDstImageData = (uintptr_t)dst->mipPtr.get();
         if (dstLevel != 1)
             pDstImageData += dst->mipOffset[dstLevel - 1];
     }
@@ -463,19 +463,19 @@ void GX2CopySurface(const GX2Surface* src, u32 srcLevel, u32 srcSlice,
 
 void GX2SurfaceVerifyForSerialization(const GX2Surface* surf)
 {
-    assert(surf->width     != 0);
-    assert(surf->height    != 0);
-    assert(surf->numMips   <= 14);
-    assert(surf->imageSize != 0);
-    assert(surf->numMips   >  1 ?
-           surf->mipSize  != 0 :
-           surf->mipSize  == 0);
-    assert(surf->pitch     != 0);
-    assert(surf->format    >  GX2_SURFACE_FORMAT_INVALID);
-    assert(surf->imagePtr  == NULL);
-    assert(surf->mipPtr    == NULL);
-    assert(surf->tileMode  >  GX2_TILE_MODE_DEFAULT &&
-           surf->tileMode  <= GX2_TILE_MODE_LINEAR_SPECIAL);
+    assert(surf->width                  != 0);
+    assert(surf->height                 != 0);
+    assert(surf->numMips                <= 14);
+    assert(surf->imageSize              != 0);
+    assert(surf->numMips                >  1 ?
+           surf->mipSize                != 0 :
+           surf->mipSize                == 0);
+    assert(surf->pitch                  != 0);
+    assert(surf->format                 >  GX2_SURFACE_FORMAT_INVALID);
+    assert(surf->imagePtr.getOffset() == 0);
+    assert(surf->mipPtr.getOffset()   == 0);
+    assert(surf->tileMode               >  GX2_TILE_MODE_DEFAULT &&
+           surf->tileMode               <= GX2_TILE_MODE_LINEAR_SPECIAL);
 }
 
 void LoadGX2Surface(const void* data, GX2Surface* surf, bool serialized, bool isBigEndian)
@@ -501,9 +501,9 @@ void LoadGX2Surface(const void* data, GX2Surface* surf, bool serialized, bool is
         dst->aa            =        (GX2AAMode)__builtin_bswap32((u32)src->aa);
         dst->use           =    (GX2SurfaceUse)__builtin_bswap32((u32)src->use);
         dst->imageSize     =                   __builtin_bswap32(     src->imageSize);
-        dst->imagePtr      =            (void*)__builtin_bswap32((u32)src->imagePtr);
+        u32  imagePtr       =                                         src->imagePtr.getOffset();
         dst->mipSize       =                   __builtin_bswap32(     src->mipSize);
-        dst->mipPtr        =            (void*)__builtin_bswap32((u32)src->mipPtr);
+        u32  mipPtr         =                                         src->mipPtr.getOffset();
         dst->tileMode      =      (GX2TileMode)__builtin_bswap32((u32)src->tileMode);
         dst->swizzle       =                   __builtin_bswap32(     src->swizzle);
         dst->alignment     =                   __builtin_bswap32(     src->alignment);
@@ -521,6 +521,9 @@ void LoadGX2Surface(const void* data, GX2Surface* surf, bool serialized, bool is
         dst->mipOffset[10] =                   __builtin_bswap32(     src->mipOffset[10]);
         dst->mipOffset[11] =                   __builtin_bswap32(     src->mipOffset[11]);
         dst->mipOffset[12] =                   __builtin_bswap32(     src->mipOffset[12]);
+
+        assert(imagePtr == 0);
+        assert(mipPtr   == 0);
     }
     else if (src != dst)
     {

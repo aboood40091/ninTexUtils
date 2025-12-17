@@ -43,21 +43,21 @@ static void LoadGX2UniformBlock(const void* data, const void* baseSrc, GX2Unifor
     for (u32 i = 0; i < count; i++)
     {
         const char* srcName;
-        *(uintptr_t*)&srcName = dst[i].name != NULL ? (uintptr_t)baseSrc + ((uintptr_t)dst[i].name & 0xFFFFFu)
-                                                    : (uintptr_t)NULL;
+        *(uintptr_t*)&srcName = dst[i].name.getOffset() != 0 ? (uintptr_t)baseSrc + (dst[i].name.getOffset() & 0xFFFFFu)
+                                                             : (uintptr_t)NULL;
 
         size_t nameLen = srcName != NULL ? std::strlen(srcName) : 0;
 
         if (nameLen == 0)
-            dst[i].name = NULL;
+            dst[i].name.set(NULL);
 
         else if (allocate)
-            dst[i].name = new char[nameLen + 1];
+            dst[i].name.set(new char[nameLen + 1]);
 
         else
-            *(uintptr_t*)&dst[i].name = (uintptr_t)baseDst + ((uintptr_t)dst[i].name & 0xFFFFFu);
+            dst[i].name.resolveRelativePtr(baseDst, 0xFFFFFu);
 
-        char* dstName = (char*)dst[i].name;
+        char* dstName = (char*)dst[i].name.get();
 
         if (srcName != dstName && nameLen != 0)
         {
@@ -95,21 +95,21 @@ static void LoadGX2UniformVar(const void* data, const void* baseSrc, GX2UniformV
     for (u32 i = 0; i < count; i++)
     {
         const char* srcName;
-        *(uintptr_t*)&srcName = dst[i].name != NULL ? (uintptr_t)baseSrc + ((uintptr_t)dst[i].name & 0xFFFFFu)
-                                                    : (uintptr_t)NULL;
+        *(uintptr_t*)&srcName = dst[i].name.getOffset() != 0 ? (uintptr_t)baseSrc + (dst[i].name.getOffset() & 0xFFFFFu)
+                                                             : (uintptr_t)NULL;
 
         size_t nameLen = srcName != NULL ? std::strlen(srcName) : 0;
 
         if (nameLen == 0)
-            dst[i].name = NULL;
+            dst[i].name.set(NULL);
 
         else if (allocate)
-            dst[i].name = new char[nameLen + 1];
+            dst[i].name.set(new char[nameLen + 1]);
 
         else
-            *(uintptr_t*)&dst[i].name = (uintptr_t)baseDst + ((uintptr_t)dst[i].name & 0xFFFFFu);
+            dst[i].name.resolveRelativePtr(baseDst, 0xFFFFFu);
 
-        char* dstName = (char*)dst[i].name;
+        char* dstName = (char*)dst[i].name.get();
 
         if (srcName != dstName && nameLen != 0)
         {
@@ -190,21 +190,21 @@ static void LoadGX2SamplerVar(const void* data, const void* baseSrc, GX2SamplerV
     for (u32 i = 0; i < count; i++)
     {
         const char* srcName;
-        *(uintptr_t*)&srcName = dst[i].name != NULL ? (uintptr_t)baseSrc + ((uintptr_t)dst[i].name & 0xFFFFFu)
-                                                    : (uintptr_t)NULL;
+        *(uintptr_t*)&srcName = dst[i].name.getOffset() != 0 ? (uintptr_t)baseSrc + (dst[i].name.getOffset() & 0xFFFFFu)
+                                                             : (uintptr_t)NULL;
 
         size_t nameLen = srcName != NULL ? std::strlen(srcName) : 0;
 
         if (nameLen == 0)
-            dst[i].name = NULL;
+            dst[i].name.set(NULL);
 
         else if (allocate)
-            dst[i].name = new char[nameLen + 1];
+            dst[i].name.set(new char[nameLen + 1]);
 
         else
-            *(uintptr_t*)&dst[i].name = (uintptr_t)baseDst + ((uintptr_t)dst[i].name & 0xFFFFFu);
+            dst[i].name.resolveRelativePtr(baseDst, 0xFFFFFu);
 
-        char* dstName = (char*)dst[i].name;
+        char* dstName = (char*)dst[i].name.get();
 
         if (srcName != dstName && nameLen != 0)
         {
@@ -241,21 +241,21 @@ static void LoadGX2AttribVar(const void* data, const void* baseSrc, GX2AttribVar
     for (u32 i = 0; i < count; i++)
     {
         const char* srcName;
-        *(uintptr_t*)&srcName = dst[i].name != NULL ? (uintptr_t)baseSrc + ((uintptr_t)dst[i].name & 0xFFFFFu)
-                                                    : (uintptr_t)NULL;
+        *(uintptr_t*)&srcName = dst[i].name.getOffset() != 0 ? (uintptr_t)baseSrc + (dst[i].name.getOffset() & 0xFFFFFu)
+                                                             : (uintptr_t)NULL;
 
         size_t nameLen = srcName != NULL ? std::strlen(srcName) : 0;
 
         if (nameLen == 0)
-            dst[i].name = NULL;
+            dst[i].name.set(NULL);
 
         else if (allocate)
-            dst[i].name = new char[nameLen + 1];
+            dst[i].name.set(new char[nameLen + 1]);
 
         else
-            *(uintptr_t*)&dst[i].name = (uintptr_t)baseDst + ((uintptr_t)dst[i].name & 0xFFFFFu);
+            dst[i].name.resolveRelativePtr(baseDst, 0xFFFFFu);
 
-        char* dstName = (char*)dst[i].name;
+        char* dstName = (char*)dst[i].name.get();
 
         if (srcName != dstName && nameLen != 0)
         {
@@ -314,34 +314,34 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
     }
 
     if (dst->numUniformBlocks != 0)
-        assert(dst->uniformBlocks != NULL);
+        assert(dst->uniformBlocks.getOffset() != 0);
     else
-        assert(dst->uniformBlocks == NULL);
+        assert(dst->uniformBlocks.getOffset() == 0);
 
     if (dst->numUniforms != 0)
-        assert(dst->uniformVars != NULL);
+        assert(dst->uniformVars.getOffset() != 0);
     else
-        assert(dst->uniformVars == NULL);
+        assert(dst->uniformVars.getOffset() == 0);
 
     if (dst->numInitialValues != 0)
-        assert(dst->initialValues != NULL);
+        assert(dst->initialValues.getOffset() != 0);
     else
-        assert(dst->initialValues == NULL);
+        assert(dst->initialValues.getOffset() == 0);
 
     if (dst->_numLoops != 0)
-        assert(dst->_loopVars != NULL);
+        assert(dst->_loopVars.getOffset() != 0);
     else
-        assert(dst->_loopVars == NULL);
+        assert(dst->_loopVars.getOffset() == 0);
 
     if (dst->numSamplers != 0)
-        assert(dst->samplerVars != NULL);
+        assert(dst->samplerVars.getOffset() != 0);
     else
-        assert(dst->samplerVars == NULL);
+        assert(dst->samplerVars.getOffset() == 0);
 
     if (dst->numAttribs != 0)
-        assert(dst->attribVars != NULL);
+        assert(dst->attribVars.getOffset() != 0);
     else
-        assert(dst->attribVars == NULL);
+        assert(dst->attribVars.getOffset() == 0);
 
     GX2UniformBlock* srcUniformBlocks;
     GX2UniformVar* srcUniformVars;
@@ -350,72 +350,72 @@ void LoadGX2VertexShader(const void* data, GX2VertexShader* shader, bool allocat
     GX2SamplerVar* srcSamplerVars;
     GX2AttribVar* srcAttribVars;
 
-    *(uintptr_t*)&srcUniformBlocks = dst->numUniformBlocks != 0 ? (uintptr_t)src + ((uintptr_t)dst->uniformBlocks & 0xFFFFFu)
+    *(uintptr_t*)&srcUniformBlocks = dst->numUniformBlocks != 0 ? (uintptr_t)src + (dst->uniformBlocks.getOffset() & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcUniformVars = dst->numUniforms != 0 ? (uintptr_t)src + ((uintptr_t)dst->uniformVars & 0xFFFFFu)
+    *(uintptr_t*)&srcUniformVars = dst->numUniforms != 0 ? (uintptr_t)src + (dst->uniformVars.getOffset() & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + ((uintptr_t)dst->initialValues & 0xFFFFFu)
+    *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + (dst->initialValues.getOffset() & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->_loopVars & 0xFFFFFu)
+    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + (dst->_loopVars.getOffset() & 0xFFFFFu)
                                                     : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + ((uintptr_t)dst->samplerVars & 0xFFFFFu)
+    *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + (dst->samplerVars.getOffset() & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcAttribVars = dst->numAttribs != 0 ? (uintptr_t)src + ((uintptr_t)dst->attribVars & 0xFFFFFu)
+    *(uintptr_t*)&srcAttribVars = dst->numAttribs != 0 ? (uintptr_t)src + (dst->attribVars.getOffset() & 0xFFFFFu)
                                                        : (uintptr_t)NULL;
 
     if (allocate)
     {
         if (dst->numUniformBlocks != 0)
-            dst->uniformBlocks = new GX2UniformBlock[dst->numUniformBlocks];
+            dst->uniformBlocks.set(new GX2UniformBlock[dst->numUniformBlocks]);
 
         if (dst->numUniforms != 0)
-            dst->uniformVars = new GX2UniformVar[dst->numUniforms];
+            dst->uniformVars.set(new GX2UniformVar[dst->numUniforms]);
 
         if (dst->numInitialValues != 0)
-            dst->initialValues = new GX2UniformInitialValue[dst->numInitialValues];
+            dst->initialValues.set(new GX2UniformInitialValue[dst->numInitialValues]);
 
         if (dst->_numLoops != 0)
-            dst->_loopVars = new u32[2 * dst->_numLoops];
+            dst->_loopVars.set(new u32[2 * dst->_numLoops]);
 
         if (dst->numSamplers != 0)
-            dst->samplerVars = new GX2SamplerVar[dst->numSamplers];
+            dst->samplerVars.set(new GX2SamplerVar[dst->numSamplers]);
 
         if (dst->numAttribs != 0)
-            dst->attribVars = new GX2AttribVar[dst->numAttribs];
+            dst->attribVars.set(new GX2AttribVar[dst->numAttribs]);
     }
     else
     {
-        if (dst->uniformBlocks != NULL)
-            *(uintptr_t*)&dst->uniformBlocks = (uintptr_t)dst + ((uintptr_t)dst->uniformBlocks & 0xFFFFFu);
-        if (dst->uniformVars != NULL)
-            *(uintptr_t*)&dst->uniformVars = (uintptr_t)dst + ((uintptr_t)dst->uniformVars & 0xFFFFFu);
-        if (dst->initialValues != NULL)
-            *(uintptr_t*)&dst->initialValues = (uintptr_t)dst + ((uintptr_t)dst->initialValues & 0xFFFFFu);
-        if (dst->_loopVars != NULL)
-            *(uintptr_t*)&dst->_loopVars = (uintptr_t)dst + ((uintptr_t)dst->_loopVars & 0xFFFFFu);
-        if (dst->samplerVars != NULL)
-            *(uintptr_t*)&dst->samplerVars = (uintptr_t)dst + ((uintptr_t)dst->samplerVars & 0xFFFFFu);
-        if (dst->attribVars != NULL)
-            *(uintptr_t*)&dst->attribVars = (uintptr_t)dst + ((uintptr_t)dst->attribVars & 0xFFFFFu);
+        if (dst->uniformBlocks.getOffset() != 0)
+            dst->uniformBlocks.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->uniformVars.getOffset() != 0)
+            dst->uniformVars.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->initialValues.getOffset() != 0)
+            dst->initialValues.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->_loopVars.getOffset() != 0)
+            dst->_loopVars.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->samplerVars.getOffset() != 0)
+            dst->samplerVars.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->attribVars.getOffset() != 0)
+            dst->attribVars.resolveRelativePtr(dst, 0xFFFFFu);
     }
 
     if (dst->numUniformBlocks != 0)
-        LoadGX2UniformBlock(srcUniformBlocks, src, dst->uniformBlocks, dst, dst->numUniformBlocks, allocate, isBigEndian);
+        LoadGX2UniformBlock(srcUniformBlocks, src, dst->uniformBlocks.get(), dst, dst->numUniformBlocks, allocate, isBigEndian);
     if (dst->numUniforms != 0)
-        LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars, dst, dst->numUniforms, allocate, isBigEndian);
+        LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars.get(), dst, dst->numUniforms, allocate, isBigEndian);
     if (dst->numInitialValues != 0)
-        LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues, dst, dst->numInitialValues, allocate, isBigEndian);
+        LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues.get(), dst, dst->numInitialValues, allocate, isBigEndian);
     if (dst->_numLoops != 0)
-        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars, dst, dst->_numLoops, allocate, isBigEndian);
+        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars.get(), dst, dst->_numLoops, allocate, isBigEndian);
     if (dst->numSamplers != 0)
-        LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars, dst, dst->numSamplers, allocate, isBigEndian);
+        LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars.get(), dst, dst->numSamplers, allocate, isBigEndian);
     if (dst->numAttribs != 0)
-        LoadGX2AttribVar(srcAttribVars, src, dst->attribVars, dst, dst->numAttribs, allocate, isBigEndian);
+        LoadGX2AttribVar(srcAttribVars, src, dst->attribVars.get(), dst, dst->numAttribs, allocate, isBigEndian);
 }
 
 void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate, bool isBigEndian)
@@ -459,29 +459,29 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
     }
 
     if (dst->numUniformBlocks != 0)
-        assert(dst->uniformBlocks != NULL);
+        assert(dst->uniformBlocks.getOffset() != 0);
     else
-        assert(dst->uniformBlocks == NULL);
+        assert(dst->uniformBlocks.getOffset() == 0);
 
     if (dst->numUniforms != 0)
-        assert(dst->uniformVars != NULL);
+        assert(dst->uniformVars.getOffset() != 0);
     else
-        assert(dst->uniformVars == NULL);
+        assert(dst->uniformVars.getOffset() == 0);
 
     if (dst->numInitialValues != 0)
-        assert(dst->initialValues != NULL);
+        assert(dst->initialValues.getOffset() != 0);
     else
-        assert(dst->initialValues == NULL);
+        assert(dst->initialValues.getOffset() == 0);
 
     if (dst->_numLoops != 0)
-        assert(dst->_loopVars != NULL);
+        assert(dst->_loopVars.getOffset() != 0);
     else
-        assert(dst->_loopVars == NULL);
+        assert(dst->_loopVars.getOffset() == 0);
 
     if (dst->numSamplers != 0)
-        assert(dst->samplerVars != NULL);
+        assert(dst->samplerVars.getOffset() != 0);
     else
-        assert(dst->samplerVars == NULL);
+        assert(dst->samplerVars.getOffset() == 0);
 
     GX2UniformBlock* srcUniformBlocks;
     GX2UniformVar* srcUniformVars;
@@ -489,62 +489,62 @@ void LoadGX2PixelShader(const void* data, GX2PixelShader* shader, bool allocate,
     void* srcLoopVars;
     GX2SamplerVar* srcSamplerVars;
 
-    *(uintptr_t*)&srcUniformBlocks = dst->numUniformBlocks != 0 ? (uintptr_t)src + ((uintptr_t)dst->uniformBlocks & 0xFFFFFu)
+    *(uintptr_t*)&srcUniformBlocks = dst->numUniformBlocks != 0 ? (uintptr_t)src + (dst->uniformBlocks.getOffset() & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcUniformVars = dst->numUniforms != 0 ? (uintptr_t)src + ((uintptr_t)dst->uniformVars & 0xFFFFFu)
+    *(uintptr_t*)&srcUniformVars = dst->numUniforms != 0 ? (uintptr_t)src + (dst->uniformVars.getOffset() & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + ((uintptr_t)dst->initialValues & 0xFFFFFu)
+    *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + (dst->initialValues.getOffset() & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->_loopVars & 0xFFFFFu)
+    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + (dst->_loopVars.getOffset() & 0xFFFFFu)
                                                     : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + ((uintptr_t)dst->samplerVars & 0xFFFFFu)
+    *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + (dst->samplerVars.getOffset() & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
 
     if (allocate)
     {
         if (dst->numUniformBlocks != 0)
-            dst->uniformBlocks = new GX2UniformBlock[dst->numUniformBlocks];
+            dst->uniformBlocks.set(new GX2UniformBlock[dst->numUniformBlocks]);
 
         if (dst->numUniforms != 0)
-            dst->uniformVars = new GX2UniformVar[dst->numUniforms];
+            dst->uniformVars.set(new GX2UniformVar[dst->numUniforms]);
 
         if (dst->numInitialValues != 0)
-            dst->initialValues = new GX2UniformInitialValue[dst->numInitialValues];
+            dst->initialValues.set(new GX2UniformInitialValue[dst->numInitialValues]);
 
         if (dst->_numLoops != 0)
-            dst->_loopVars = new u32[2 * dst->_numLoops];
+            dst->_loopVars.set(new u32[2 * dst->_numLoops]);
 
         if (dst->numSamplers != 0)
-            dst->samplerVars = new GX2SamplerVar[dst->numSamplers];
+            dst->samplerVars.set(new GX2SamplerVar[dst->numSamplers]);
     }
     else
     {
-        if (dst->uniformBlocks != NULL)
-            *(uintptr_t*)&dst->uniformBlocks = (uintptr_t)dst + ((uintptr_t)dst->uniformBlocks & 0xFFFFFu);
-        if (dst->uniformVars != NULL)
-            *(uintptr_t*)&dst->uniformVars = (uintptr_t)dst + ((uintptr_t)dst->uniformVars & 0xFFFFFu);
-        if (dst->initialValues != NULL)
-            *(uintptr_t*)&dst->initialValues = (uintptr_t)dst + ((uintptr_t)dst->initialValues & 0xFFFFFu);
-        if (dst->_loopVars != NULL)
-            *(uintptr_t*)&dst->_loopVars = (uintptr_t)dst + ((uintptr_t)dst->_loopVars & 0xFFFFFu);
-        if (dst->samplerVars != NULL)
-            *(uintptr_t*)&dst->samplerVars = (uintptr_t)dst + ((uintptr_t)dst->samplerVars & 0xFFFFFu);
+        if (dst->uniformBlocks.getOffset() != 0)
+            dst->uniformBlocks.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->uniformVars.getOffset() != 0)
+            dst->uniformVars.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->initialValues.getOffset() != 0)
+            dst->initialValues.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->_loopVars.getOffset() != 0)
+            dst->_loopVars.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->samplerVars.getOffset() != 0)
+            dst->samplerVars.resolveRelativePtr(dst, 0xFFFFFu);
     }
 
     if (dst->numUniformBlocks != 0)
-        LoadGX2UniformBlock(srcUniformBlocks, src, dst->uniformBlocks, dst, dst->numUniformBlocks, allocate, isBigEndian);
+        LoadGX2UniformBlock(srcUniformBlocks, src, dst->uniformBlocks.get(), dst, dst->numUniformBlocks, allocate, isBigEndian);
     if (dst->numUniforms != 0)
-        LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars, dst, dst->numUniforms, allocate, isBigEndian);
+        LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars.get(), dst, dst->numUniforms, allocate, isBigEndian);
     if (dst->numInitialValues != 0)
-        LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues, dst, dst->numInitialValues, allocate, isBigEndian);
+        LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues.get(), dst, dst->numInitialValues, allocate, isBigEndian);
     if (dst->_numLoops != 0)
-        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars, dst, dst->_numLoops, allocate, isBigEndian);
+        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars.get(), dst, dst->_numLoops, allocate, isBigEndian);
     if (dst->numSamplers != 0)
-        LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars, dst, dst->numSamplers, allocate, isBigEndian);
+        LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars.get(), dst, dst->numSamplers, allocate, isBigEndian);
 }
 
 void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool allocate, bool isBigEndian)
@@ -597,29 +597,29 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
     }
 
     if (dst->numUniformBlocks != 0)
-        assert(dst->uniformBlocks != NULL);
+        assert(dst->uniformBlocks.getOffset() != 0);
     else
-        assert(dst->uniformBlocks == NULL);
+        assert(dst->uniformBlocks.getOffset() == 0);
 
     if (dst->numUniforms != 0)
-        assert(dst->uniformVars != NULL);
+        assert(dst->uniformVars.getOffset() != 0);
     else
-        assert(dst->uniformVars == NULL);
+        assert(dst->uniformVars.getOffset() == 0);
 
     if (dst->numInitialValues != 0)
-        assert(dst->initialValues != NULL);
+        assert(dst->initialValues.getOffset() != 0);
     else
-        assert(dst->initialValues == NULL);
+        assert(dst->initialValues.getOffset() == 0);
 
     if (dst->_numLoops != 0)
-        assert(dst->_loopVars != NULL);
+        assert(dst->_loopVars.getOffset() != 0);
     else
-        assert(dst->_loopVars == NULL);
+        assert(dst->_loopVars.getOffset() == 0);
 
     if (dst->numSamplers != 0)
-        assert(dst->samplerVars != NULL);
+        assert(dst->samplerVars.getOffset() != 0);
     else
-        assert(dst->samplerVars == NULL);
+        assert(dst->samplerVars.getOffset() == 0);
 
     GX2UniformBlock* srcUniformBlocks;
     GX2UniformVar* srcUniformVars;
@@ -627,62 +627,62 @@ void LoadGX2GeometryShader(const void* data, GX2GeometryShader* shader, bool all
     void* srcLoopVars;
     GX2SamplerVar* srcSamplerVars;
 
-    *(uintptr_t*)&srcUniformBlocks = dst->numUniformBlocks != 0 ? (uintptr_t)src + ((uintptr_t)dst->uniformBlocks & 0xFFFFFu)
+    *(uintptr_t*)&srcUniformBlocks = dst->numUniformBlocks != 0 ? (uintptr_t)src + (dst->uniformBlocks.getOffset() & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcUniformVars = dst->numUniforms != 0 ? (uintptr_t)src + ((uintptr_t)dst->uniformVars & 0xFFFFFu)
+    *(uintptr_t*)&srcUniformVars = dst->numUniforms != 0 ? (uintptr_t)src + (dst->uniformVars.getOffset() & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + ((uintptr_t)dst->initialValues & 0xFFFFFu)
+    *(uintptr_t*)&srcInitialValues = dst->numInitialValues != 0 ? (uintptr_t)src + (dst->initialValues.getOffset() & 0xFFFFFu)
                                                                 : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + ((uintptr_t)dst->_loopVars & 0xFFFFFu)
+    *(uintptr_t*)&srcLoopVars = dst->_numLoops != 0 ? (uintptr_t)src + (dst->_loopVars.getOffset() & 0xFFFFFu)
                                                     : (uintptr_t)NULL;
 
-    *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + ((uintptr_t)dst->samplerVars & 0xFFFFFu)
+    *(uintptr_t*)&srcSamplerVars = dst->numSamplers != 0 ? (uintptr_t)src + (dst->samplerVars.getOffset() & 0xFFFFFu)
                                                          : (uintptr_t)NULL;
 
     if (allocate)
     {
         if (dst->numUniformBlocks != 0)
-            dst->uniformBlocks = new GX2UniformBlock[dst->numUniformBlocks];
+            dst->uniformBlocks.set(new GX2UniformBlock[dst->numUniformBlocks]);
 
         if (dst->numUniforms != 0)
-            dst->uniformVars = new GX2UniformVar[dst->numUniforms];
+            dst->uniformVars.set(new GX2UniformVar[dst->numUniforms]);
 
         if (dst->numInitialValues != 0)
-            dst->initialValues = new GX2UniformInitialValue[dst->numInitialValues];
+            dst->initialValues.set(new GX2UniformInitialValue[dst->numInitialValues]);
 
         if (dst->_numLoops != 0)
-            dst->_loopVars = new u32[2 * dst->_numLoops];
+            dst->_loopVars.set(new u32[2 * dst->_numLoops]);
 
         if (dst->numSamplers != 0)
-            dst->samplerVars = new GX2SamplerVar[dst->numSamplers];
+            dst->samplerVars.set(new GX2SamplerVar[dst->numSamplers]);
     }
     else
     {
-        if (dst->uniformBlocks != NULL)
-            *(uintptr_t*)&dst->uniformBlocks = (uintptr_t)dst + ((uintptr_t)dst->uniformBlocks & 0xFFFFFu);
-        if (dst->uniformVars != NULL)
-            *(uintptr_t*)&dst->uniformVars = (uintptr_t)dst + ((uintptr_t)dst->uniformVars & 0xFFFFFu);
-        if (dst->initialValues != NULL)
-            *(uintptr_t*)&dst->initialValues = (uintptr_t)dst + ((uintptr_t)dst->initialValues & 0xFFFFFu);
-        if (dst->_loopVars != NULL)
-            *(uintptr_t*)&dst->_loopVars = (uintptr_t)dst + ((uintptr_t)dst->_loopVars & 0xFFFFFu);
-        if (dst->samplerVars != NULL)
-            *(uintptr_t*)&dst->samplerVars = (uintptr_t)dst + ((uintptr_t)dst->samplerVars & 0xFFFFFu);
+        if (dst->uniformBlocks.getOffset() != 0)
+            dst->uniformBlocks.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->uniformVars.getOffset() != 0)
+            dst->uniformVars.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->initialValues.getOffset() != 0)
+            dst->initialValues.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->_loopVars.getOffset() != 0)
+            dst->_loopVars.resolveRelativePtr(dst, 0xFFFFFu);
+        if (dst->samplerVars.getOffset() != 0)
+            dst->samplerVars.resolveRelativePtr(dst, 0xFFFFFu);
     }
 
     if (dst->numUniformBlocks != 0)
-        LoadGX2UniformBlock(srcUniformBlocks, src, dst->uniformBlocks, dst, dst->numUniformBlocks, allocate, isBigEndian);
+        LoadGX2UniformBlock(srcUniformBlocks, src, dst->uniformBlocks.get(), dst, dst->numUniformBlocks, allocate, isBigEndian);
     if (dst->numUniforms != 0)
-        LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars, dst, dst->numUniforms, allocate, isBigEndian);
+        LoadGX2UniformVar(srcUniformVars, src, dst->uniformVars.get(), dst, dst->numUniforms, allocate, isBigEndian);
     if (dst->numInitialValues != 0)
-        LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues, dst, dst->numInitialValues, allocate, isBigEndian);
+        LoadGX2UniformInitialValue(srcInitialValues, src, dst->initialValues.get(), dst, dst->numInitialValues, allocate, isBigEndian);
     if (dst->_numLoops != 0)
-        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars, dst, dst->_numLoops, allocate, isBigEndian);
+        LoadGX2LoopVar(srcLoopVars, src, dst->_loopVars.get(), dst, dst->_numLoops, allocate, isBigEndian);
     if (dst->numSamplers != 0)
-        LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars, dst, dst->numSamplers, allocate, isBigEndian);
+        LoadGX2SamplerVar(srcSamplerVars, src, dst->samplerVars.get(), dst, dst->numSamplers, allocate, isBigEndian);
 }
 
 }

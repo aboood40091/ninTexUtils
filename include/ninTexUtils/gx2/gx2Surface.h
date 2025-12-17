@@ -1,6 +1,7 @@
 #ifndef NIN_TEX_UTILS_GX2_SURFACE_H_
 #define NIN_TEX_UTILS_GX2_SURFACE_H_
 
+#include "SerializedPtr.hpp"
 #include "gx2Enum.h"
 
 typedef struct _GX2Surface
@@ -14,9 +15,9 @@ typedef struct _GX2Surface
     GX2AAMode aa;
     GX2SurfaceUse use;
     u32 imageSize;
-    void* imagePtr;
+    SerializedPtr<void> imagePtr;
     u32 mipSize;
-    void* mipPtr;
+    SerializedPtr<void> mipPtr;
     GX2TileMode tileMode;
     u32 swizzle;
     u32 alignment;
@@ -68,21 +69,12 @@ inline void SaveGX2Surface(
 {
     assert(surf);
 
-    void* imagePtr = surf->imagePtr;
-    void* mipPtr = surf->mipPtr;
-
     GX2Surface* surf_cc = (GX2Surface*)surf;
-    surf_cc->imagePtr = (void*)0;
-    surf_cc->mipPtr = (void*)0;
+    ScopedSerializedPtrNullSetter imageNullSetter(&surf_cc->imagePtr, surf == data);
+    ScopedSerializedPtrNullSetter mipNullSetter(&surf_cc->mipPtr, surf == data);
 
     GX2SurfaceVerifyForSerialization(surf);
     LoadGX2Surface(surf, (GX2Surface*)data, false, isBigEndian);
-
-    if (surf != data)
-    {
-        surf_cc->imagePtr = imagePtr;
-        surf_cc->mipPtr = mipPtr;
-    }
 }
 
 void GX2SurfacePrintInfo(const GX2Surface* surf);

@@ -287,17 +287,17 @@ void GX2TextureFromLinear2D(GX2Texture* texture, u32 width, u32 height, u32 numM
 
     // Validate and set the image data
     assert(imageSize >= linear_surface.imageSize);
-    linear_surface.imagePtr = const_cast<u8*>(imagePtr);
+    linear_surface.imagePtr.set(const_cast<u8*>(imagePtr));
 
     // Validate and set the mip data
     if (numMips > 1)
     {
         assert(mipSize >= linear_surface.mipSize);
-        linear_surface.mipPtr = const_cast<u8*>(mipPtr);
+        linear_surface.mipPtr.set(const_cast<u8*>(mipPtr));
     }
     else
     {
-        linear_surface.mipPtr = nullptr;
+        linear_surface.mipPtr.set(nullptr);
     }
 
     // Set up GX2Texture for the tiled texture
@@ -323,11 +323,11 @@ void GX2TextureFromLinear2D(GX2Texture* texture, u32 width, u32 height, u32 numM
 
     GX2InitTextureRegs(texture, gfd_v7);
 
-    texture->surface.imagePtr = (u8*)std::malloc(texture->surface.imageSize);
+    texture->surface.imagePtr.set((u8*)std::malloc(texture->surface.imageSize));
     if (numMips > 1)
-        texture->surface.mipPtr = (u8*)std::malloc(texture->surface.mipSize);
+        texture->surface.mipPtr.set((u8*)std::malloc(texture->surface.mipSize));
     else
-        texture->surface.mipPtr = nullptr;
+        texture->surface.mipPtr.set(nullptr);
 
     // Tile our texture
     GX2CopySurface(&linear_surface, 0, 0, &texture->surface, 0, 0);
@@ -706,13 +706,13 @@ u8* GX2TextureToDDS(const GX2Texture* texture, size_t* fileSize, bool printInfo)
     u8* file = (u8*)std::malloc(_fileSize);
 
     // Set the image data pointer
-    linear_surface.imagePtr = file + imageOffs;
+    linear_surface.imagePtr.set(file + imageOffs);
 
     // Set the mip data pointer
     if (numMips > 1)
-        linear_surface.mipPtr = file + mipOffs;
+        linear_surface.mipPtr.set(file + mipOffs);
     else
-        linear_surface.mipPtr = nullptr;
+        linear_surface.mipPtr.set(nullptr);
 
     // Untile our texture
     GX2CopySurface(&texture->surface, 0, 0, &linear_surface, 0, 0);
