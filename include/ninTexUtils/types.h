@@ -60,11 +60,11 @@ typedef uint64_t u64;
 typedef float  f32;
 typedef double f64;
 
-static_assert(sizeof(s8)  == sizeof(u8)  && sizeof(u8)  == sizeof(char) && sizeof(char) == 1);
-static_assert(sizeof(s16) == sizeof(u16) && sizeof(u16) == 2);
-static_assert(sizeof(s32) == sizeof(u32) && sizeof(u32) == 4);
-static_assert(sizeof(s64) == sizeof(u64) && sizeof(u64) == 8);
-static_assert(sizeof(f32) == 4);
-static_assert(sizeof(f64) == 8);
+static_assert(sizeof(s8)  == sizeof(u8)  && sizeof(u8)  == sizeof(char) && sizeof(char) == 1, "s8, u8 and char must be 1 byte.");
+static_assert(sizeof(s16) == sizeof(u16) && sizeof(u16) == 2, "s16 and u16 must be 2 bytes.");
+static_assert(sizeof(s32) == sizeof(u32) && sizeof(u32) == 4, "s32 and u32 must be 4 bytes.");
+static_assert(sizeof(s64) == sizeof(u64) && sizeof(u64) == 8, "s64 and u64 must be 8 bytes.");
+static_assert(sizeof(f32) == 4, "f32 must be 4 bytes.");
+static_assert(sizeof(f64) == 8, "f64 must be 8 bytes.");
 
 typedef int BOOL;
