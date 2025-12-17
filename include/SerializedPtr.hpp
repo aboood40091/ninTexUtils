@@ -1,11 +1,29 @@
 #pragma once
 
-#include <misc/rio_Types.h>
+#include <ninTexUtils/types.h>
 
 #include <cstdint>
 #include <cstddef>
 #include <vector>
 #include <type_traits>
+
+#ifdef _DEBUG
+    #ifdef __WUT__
+        #include <coreinit/debug.h>
+
+        #define SER_PTR32_ASSERT(ARG)                   \
+            do                                          \
+            {                                           \
+                if (!(ARG))                             \
+                    OSPanic(__FILE__, __LINE__, #ARG);  \
+            } while (0)
+    #else
+        #include <cassert>
+        #define SER_PTR32_ASSERT(ARG) assert(ARG)
+    #endif
+#else
+    #define SER_PTR32_ASSERT(ARG) ((void)(ARG))
+#endif // RIO_DEBUG
 
 // TODO: Debloating
 class Ptr32Registry
@@ -37,8 +55,8 @@ public:
             return 0;
 
         constexpr u32 cMaxIndex = 0x3FFFFFFFu;
-        RIO_ASSERT(mTable.size() >= 1); // ensure index 0 exists
-        RIO_ASSERT(mTable.size() - 1 < cMaxIndex && "Ptr32Registry overflow (too many stored pointers).");
+        SER_PTR32_ASSERT(mTable.size() >= 1); // ensure index 0 exists
+        SER_PTR32_ASSERT(mTable.size() - 1 < cMaxIndex && "Ptr32Registry overflow (too many stored pointers).");
 
         mTable.push_back(p);
         u32 index = static_cast<u32>(mTable.size() - 1);
@@ -50,9 +68,9 @@ public:
         if (encoded == 0)
             return nullptr;
 
-        RIO_ASSERT(isEncodedID(encoded) && "Ptr32Registry::load called with non-ID encoding.");
+        SER_PTR32_ASSERT(isEncodedID(encoded) && "Ptr32Registry::load called with non-ID encoding.");
         u32 index = decodeIndex(encoded);
-        RIO_ASSERT(index < mTable.size() && "Ptr32Registry::load: invalid ID index.");
+        SER_PTR32_ASSERT(index < mTable.size() && "Ptr32Registry::load: invalid ID index.");
         return mTable[index];
     }
 
@@ -137,7 +155,7 @@ public:
             return reinterpret_cast<T*>(static_cast<uintptr_t>(mRaw));
         else
         {
-            RIO_ASSERT(holdsID_() && "SerializedPtr::get(): field is not an ID. Did you forget to relocate offsets?");
+            SER_PTR32_ASSERT(holdsID_() && "SerializedPtr::get(): field is not an ID. Did you forget to relocate offsets?");
             return reinterpret_cast<T*>(Ptr32Registry::instance().load(mRaw));
         }
     }
@@ -154,12 +172,12 @@ public:
 
         if constexpr (!cNative32)
         {
-            RIO_ASSERT(!holdsID_() && "SerializedPtr::resolveRelativePtr(): Double resolution of ID not allowed.");
+            SER_PTR32_ASSERT(!holdsID_() && "SerializedPtr::resolveRelativePtr(): Double resolution of ID not allowed.");
         }
 
         // Treat as signed offset.
         s32 off = static_cast<s32>(mRaw & mask);
-        RIO_ASSERT(offsetInRange_(off) && "SerializedPtr::resolveRelativePtr(): offset out of +-1 GiB range.");
+        SER_PTR32_ASSERT(offsetInRange_(off) && "SerializedPtr::resolveRelativePtr(): offset out of +-1 GiB range.");
         auto base = reinterpret_cast<const u8*>(origin);
         T* p =  reinterpret_cast<T*>(const_cast<u8*>(base + off));
         set(p);
@@ -170,7 +188,7 @@ public:
         // In 64-bit mode, IDs exist and must not be treated as offsets.
         if constexpr (!cNative32)
         {
-            RIO_ASSERT(!holdsID_() && "SerializedPtr::getOffset(): field holds an ID, not an offset.");
+            SER_PTR32_ASSERT(!holdsID_() && "SerializedPtr::getOffset(): field holds an ID, not an offset.");
         }
 
         return static_cast<s32>(mRaw);
@@ -198,7 +216,7 @@ public:
     }
 
 private:
-    u32 mSavedRaw;
     SerializedPtrBase* mTarget;
+    u32 mSavedRaw;
     bool mSkipRestore;
 };
