@@ -451,7 +451,7 @@ void GX2CopySurface(const GX2Surface* src, u32 srcLevel, u32 srcSlice,
 
             switch (bitsPerPixel)
             {
-            case 128: *((u64*)pDstPixel + 1) = *((u64*)pSrcPixel + 1);
+            case 128: *((u64*)pDstPixel + 1) = *((u64*)pSrcPixel + 1); [[fallthrough]];
             case 64:  *(u64*)pDstPixel = *(u64*)pSrcPixel; break;
             case 32:  *(u32*)pDstPixel = *(u32*)pSrcPixel; break;
             case 16:  *(u16*)pDstPixel = *(u16*)pSrcPixel; break;
