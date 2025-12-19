@@ -23,7 +23,7 @@
     #endif
 #else
     #define SER_PTR32_ASSERT(ARG) ((void)(ARG))
-#endif // RIO_DEBUG
+#endif // _DEBUG
 
 // TODO: Debloating
 class Ptr32Registry
@@ -44,7 +44,7 @@ public:
 private:
     Ptr32Registry()
     {
-        mTable.reserve(100'000);
+        mTable.reserve(0x800000); // 32 MiB
         mTable.push_back(nullptr);
     }
 
