@@ -80,7 +80,7 @@ inline void SaveGFDHeader(
     {
         GFDAlignMode alignMode = header->alignMode;
 
-        GFDHeader* header_cc = (GFDHeader*)header;
+        GFDHeader* header_cc = const_cast<GFDHeader*>(header);
         header_cc->alignMode = (GFDAlignMode)0;
 
         GFDHeaderVerifyForSerialization(header);

@@ -69,7 +69,7 @@ inline void SaveGX2Surface(
 {
     assert(surf);
 
-    GX2Surface* surf_cc = (GX2Surface*)surf;
+    GX2Surface* surf_cc = const_cast<GX2Surface*>(surf);
     ScopedSerializedPtrNullSetter imageNullSetter(&surf_cc->imagePtr, surf == data);
     ScopedSerializedPtrNullSetter mipNullSetter(&surf_cc->mipPtr, surf == data);
 

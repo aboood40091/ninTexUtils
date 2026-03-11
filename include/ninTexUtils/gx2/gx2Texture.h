@@ -56,7 +56,7 @@ inline void SaveGX2Texture(
 {
     assert(tex);
 
-    GX2Texture* tex_cc = (GX2Texture*)tex;
+    GX2Texture* tex_cc = const_cast<GX2Texture*>(tex);
     ScopedSerializedPtrNullSetter imageNullSetter(&tex_cc->surface.imagePtr, tex == data);
     ScopedSerializedPtrNullSetter mipNullSetter(&tex_cc->surface.mipPtr, tex == data);
 
